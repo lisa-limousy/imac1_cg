@@ -13,7 +13,7 @@ static const unsigned int BIT_PER_PIXEL = 32;
 
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
 
-static const unsigned int COLORS[] = {
+static const unsigned char COLORS[] = {
      0, 0, 0 ,
      255, 0, 0 ,
      0, 255, 0 ,
@@ -24,7 +24,7 @@ static const unsigned int COLORS[] = {
      255, 255, 255 
 };
 
-// = 8 couleurs disponibles dans la palette */
+// = 8 couleurs disponibles dans la palette
 static const unsigned int RVB_COLORS = sizeof(COLORS) / (3 * sizeof(unsigned char));
 
 int main(int argc, char** argv) {
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
   setVideoMode();
   SDL_WM_SetCaption("Paint", NULL);
   
-  unsigned int color = 6; 
+  unsigned int color = 1; 
   int mode = 0;
   PrimitiveList primitives = NULL;
   addPrimitive(allocPrimitive(GL_POINTS), &primitives);
@@ -61,13 +61,12 @@ int main(int argc, char** argv) {
     while(SDL_PollEvent(&e)) {
       if(e.type == SDL_QUIT) {
         loop = 0;
-        break;
       }
       
       switch(e.type) {
         case SDL_MOUSEBUTTONUP:
           if(mode == 1) {
-            //color = e.button.x * RVB_COLORS / WINDOW_WIDTH;
+            color = e.button.x * RVB_COLORS / WINDOW_WIDTH;
           } 
           else {
             addPointToList(allocPoint(-1 + 2. * e.button.x / WINDOW_WIDTH, - (-1 + 2. * e.button.y / WINDOW_HEIGHT), COLORS[color * 3], COLORS[color * 3 + 1], COLORS[color * 3 + 2]), &primitives->points);
@@ -215,10 +214,15 @@ void drawPrimitives(PrimitiveList list) {
 
 void palette() {
   int i;
+  GLfloat dx = 2.f / RVB_COLORS;
   glBegin(GL_QUADS);
-    for(i = 0; i < RVB_COLORS; ++i) {
-      /*glColor3ubv(i * 3);
-      glVertex2f();*/
+    for(i = 0; i < RVB_COLORS; i++) {
+      glColor3ubv(COLORS + i * 3);
+      
+      glVertex2f(-1 + i * dx, -1);
+      glVertex2f(-1 + (i + 1) * dx, -1);
+      glVertex2f(-1 + (i + 1) * dx, 1);
+      glVertex2f(-1 + i * dx, 1);
     }
   glEnd();
 }
