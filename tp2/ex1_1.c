@@ -17,7 +17,7 @@ static const unsigned int BIT_PER_PIXEL = 32;
 
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
 
-void resize() {
+void reshape() {
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -29,11 +29,7 @@ void setVideoMode() {
     fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
     exit(EXIT_FAILURE);
   }
-  
-  resize();
-  
-  glClear(GL_COLOR_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
+  reshape();
 }
 
 Point* allocPoint(float x, float y, unsigned char r, unsigned char g, unsigned char b) {
@@ -64,6 +60,14 @@ void drawPoints(PointList list) {
     glColor3ub(list->r, list->g, list->b);
     glVertex2f(list->x, list->y);
     list = list->next;
+  }
+}
+
+void deletePoints(PointList *list) {
+  while(*list) {
+    Point *next = (*list)->next;
+    free(*list);
+    *list = next;
   }
 }
 

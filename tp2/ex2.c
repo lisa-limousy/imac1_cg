@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 #define PI 3.1415927
+#define CIRCLE 300
 
 static unsigned int WINDOW_WIDTH = 400;
 static unsigned int WINDOW_HEIGHT = 400;
@@ -29,41 +30,40 @@ void setVideoMode() {
   resize();
   
   glClear(GL_COLOR_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
 }
 
 void drawSquare(SDL_Event e){
     glBegin(GL_QUADS);   
-                glVertex2d((-1 + 2. * e.button.x / WINDOW_WIDTH) - 0.5, - (-1 + 2. * e.button.y / WINDOW_HEIGHT) - 0.5);
-                glVertex2d((-1 + 2. * e.button.x / WINDOW_WIDTH) + 0.5, - (-1 + 2. * e.button.y / WINDOW_HEIGHT) - 0.5);
-                glVertex2d((-1 + 2. * e.button.x / WINDOW_WIDTH) + 0.5, - (-1 + 2. * e.button.y / WINDOW_HEIGHT) + 0.5);
-                glVertex2d((-1 + 2. * e.button.x / WINDOW_WIDTH) - 0.5, - (-1 + 2. * e.button.y / WINDOW_HEIGHT) + 0.5);
+                glVertex2d(- 0.5, 0.5);
+                glVertex2d(0.5, 0.5);
+                glVertex2d(0.5, - 0.5);
+                glVertex2d(- 0.5, - 0.5);
             glEnd();
-            SDL_GL_SwapBuffers();   
+           SDL_GL_SwapBuffers();   
 }
 
 void drawLandMark(SDL_Event e){
     glBegin(GL_LINES);
                 glColor3ub(0, 255, 0);
-                glVertex2d((-1 + 2. * e.button.x / WINDOW_WIDTH), - (-1 + 2. * e.button.y / WINDOW_HEIGHT));
-                glVertex2d((-1 + 2. * e.button.x / WINDOW_WIDTH), - (-1 + 2. * e.button.y / WINDOW_HEIGHT) + 1);
+                glVertex2d(0, 0);
+                glVertex2d(0, 1);
                 glColor3ub(255, 0, 0);
-                glVertex2d((-1 + 2. * e.button.x / WINDOW_WIDTH), - (-1 + 2. * e.button.y / WINDOW_HEIGHT));
-                glVertex2d((-1 + 2. * e.button.x / WINDOW_WIDTH) + 1, - (-1 + 2. * e.button.y / WINDOW_HEIGHT));
+                glVertex2d(0, 0);
+                glVertex2d(1, 0);
             glEnd();
-            SDL_GL_SwapBuffers();   
+           SDL_GL_SwapBuffers();   
 }
 
 void drawCircle(){
     glBegin(GL_LINE_LOOP);
-        for(int i =0; i <= 300; i++){
-            double angle = 2 * PI * i / 300;
+        for(int i =0; i <= CIRCLE; i++){
+            double angle = 2 * PI * i / CIRCLE;
             double x = cos(angle);
             double y = sin(angle);
             glVertex2d(x,y);
         }
         glEnd();
-        SDL_GL_SwapBuffers();   
+       SDL_GL_SwapBuffers();   
 }
 
 int main(int argc, char** argv) {
@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
     
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+  //SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
   
   setVideoMode();
 
@@ -91,9 +91,10 @@ int main(int argc, char** argv) {
       
       switch(e.type) {
         case SDL_MOUSEBUTTONDOWN:
-            //drawSquare(e);
-            //drawLandMark(e);
-              drawCircle();
+    
+            drawSquare(e);
+            drawLandMark(e);
+            drawCircle(e);
         break;
 
         case SDL_VIDEORESIZE:
