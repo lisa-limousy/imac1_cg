@@ -91,24 +91,25 @@ int main(int argc, char** argv) {
       }
       
       switch(e.type) {
-        case SDL_MOUSEBUTTONUP:
-          addPointToList(allocPoint(-1 + 2. * e.button.x / WINDOW_WIDTH, - (-1 + 2. * e.button.y / WINDOW_HEIGHT), 255, 0, 0), &list);
-          glBegin(GL_LINE_STRIP);
-            drawPoints(list);
-          glEnd();
-          SDL_GL_SwapBuffers();
-        break;
+        case SDL_MOUSEBUTTONDOWN:
+            
+          if (e.button.button == SDL_BUTTON_RIGHT){
+              addPointToList(allocPoint(-1 + 2. * e.button.x / WINDOW_WIDTH, - (-1 + 2. * e.button.y / WINDOW_HEIGHT), 255, 0, 0), &list);
+              addPointToList(allocPoint(list->x, list->y, 255, 0, 0), &list);
+              glBegin(GL_LINE_STRIP);
+                    drawPoints(list);
+                glEnd();
+                SDL_GL_SwapBuffers();
+              
+            }
+            else {
+                addPointToList(allocPoint(-1 + 2. * e.button.x / WINDOW_WIDTH, - (-1 + 2. * e.button.y / WINDOW_HEIGHT), 255, 0, 0), &list);
+                glBegin(GL_LINE_STRIP);
+                    drawPoints(list);
+                glEnd();
+                SDL_GL_SwapBuffers();
+            }
         
-        case SDL_BUTTON_RIGHT:
-          addPointToList(allocPoint(-1 + 2. * e.button.x / WINDOW_WIDTH, - (-1 + 2. * e.button.y / WINDOW_HEIGHT), 255, 0, 0), &list);
-          glBegin(GL_LINES);
-            drawPoints(list);
-          glEnd();
-          glBegin(GL_LINES);
-            glColor3ub(255, 0, 0);
-            glVertex2f(list->x, list->y);
-          glEnd();
-          SDL_GL_SwapBuffers();
         break;
 
         case SDL_VIDEORESIZE:
